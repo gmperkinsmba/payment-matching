@@ -1,5 +1,7 @@
 const token=document.querySelector('meta[name="request-token"]').content;
 const $=id=>document.getElementById(id);
+const desktop=new URLSearchParams(location.search).get("desktop")==="1";
+if(desktop)document.documentElement.classList.add("desktop");
 const esc=s=>String(s??"");
 const node=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=esc(text);if(cls)n.className=cls;return n};
 async function api(path,body){
@@ -115,11 +117,30 @@ $("allocate").onclick=async()=>{const note=$("allocationFeedback");note.textCont
   try{const result=await api("/api/allocate",{payment_row:selectedPayment,invoice_row:$("invoiceChoice").value,amount_text:$("amountInput").value,reason:$("reasonInput").value});
     note.textContent=result.status==="duplicate"?result.message:"Recorded "+result.amount_text+". Source rows and reason are in the audit trail.";await refresh();
   }catch(e){showError(note,e)}};
-let prefs={};try{prefs=JSON.parse(localStorage.getItem("workflow-ledger-prefs")||"{}")}catch{}
-$("compactToggle").checked=!!prefs.compact;$("motionToggle").checked=!!prefs.reduceMotion;
-document.body.classList.toggle("compact",!!prefs.compact);document.body.classList.toggle("reduce-motion",!!prefs.reduceMotion);
-function savePrefs(){const next={compact:$("compactToggle").checked,reduceMotion:$("motionToggle").checked};localStorage.setItem("workflow-ledger-prefs",JSON.stringify(next))}
-$("compactToggle").onchange=e=>{document.body.classList.toggle("compact",e.target.checked);savePrefs()};
-$("motionToggle").onchange=e=>{document.body.classList.toggle("reduce-motion",e.target.checked);savePrefs()};
+let prefs={};
+async function initializePreferences(){
+  let saved=await api("/api/settings");
+  if(!saved.saved){
+    try{
+      const legacy=JSON.parse(localStorage.getItem("workflow-ledger-prefs")||"null");
+      if(legacy&&typeof legacy.compact==="boolean"&&typeof legacy.reduceMotion==="boolean"){
+        saved=await api("/api/settings",{compact:legacy.compact,reduceMotion:legacy.reduceMotion});
+        localStorage.removeItem("workflow-ledger-prefs");
+      }
+    }catch{}
+  }
+  prefs=saved.preferences||{compact:false,reduceMotion:false};
+  $("compactToggle").checked=prefs.compact;$("motionToggle").checked=prefs.reduceMotion;
+  document.body.classList.toggle("compact",prefs.compact);document.body.classList.toggle("reduce-motion",prefs.reduceMotion);
+}
+async function savePrefs(){
+  const next={compact:$("compactToggle").checked,reduceMotion:$("motionToggle").checked};
+  document.body.classList.toggle("compact",next.compact);document.body.classList.toggle("reduce-motion",next.reduceMotion);
+  const status=$("prefsFeedback");status.textContent="Saving settings…";
+  try{await api("/api/settings",next);status.textContent="Settings saved on this Mac."}
+  catch(e){status.textContent=e.message;status.classList.add("error-text")}
+}
+$("compactToggle").onchange=savePrefs;
+$("motionToggle").onchange=savePrefs;
 const reduce=window.matchMedia("(prefers-reduced-motion: reduce)");if(reduce.matches)document.body.classList.add("reduce-motion");
-refresh().catch(e=>{document.querySelector(".workbench").replaceChildren(node("div",e.message,"empty"))});
+Promise.all([refresh(),initializePreferences()]).catch(e=>{document.querySelector(".workbench").replaceChildren(node("div",e.message,"empty"))});

@@ -7,10 +7,11 @@ import json
 import os
 import re
 import sqlite3
+import sys
 from decimal import Decimal, InvalidOperation, localcontext
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent)).resolve()
 RUNTIME = Path(os.environ.get("WORKFLOW_LEDGER_HOME", Path.home() / ".workflow-ledger")).expanduser().resolve()
 RUNTIME.mkdir(mode=0o700, parents=True, exist_ok=True)
 os.chmod(RUNTIME, 0o700)

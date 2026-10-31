@@ -1,0 +1,6 @@
+static/index.html
+static/app.css
+static/app.js
+fixtures/invoices.csv
+fixtures/payments.csv
+fixtures/payments-revised.csv
