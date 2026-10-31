@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="request-token" content="__TOKEN__">
+  <title>Workflow Ledger</title><link rel="stylesheet" href="/app.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="/" aria-label="Workflow Ledger home"><span class="brand-mark">W</span><span>Workflow Ledger</span></a>
+  <div class="top-actions"><span class="local"><i></i>LOCAL DEMO</span><button id="export" class="outline">Export CSV</button><button id="settingsOpen" class="icon-button" aria-label="Open settings">Settings</button></div>
+</header>
+<main>
+  <section class="hero"><div class="eyebrow">EVIDENCE WORKSPACE <span>/ CSV RECONCILIATION</span></div><h1>Workflow Ledger</h1><p>Review invoice and payment imports, resolve matches, and keep a traceable record.</p></section>
+  <section class="metrics" aria-label="Ledger totals">
+    <div><span>BATCHES</span><strong id="batchCount">—</strong></div><div><span>INVOICES</span><strong id="invoiceCount">—</strong></div><div><span>PAYMENTS</span><strong id="paymentCount">—</strong></div><div><span>OPEN ITEMS</span><strong id="openCount">—</strong></div><button id="importOpen" class="primary">Import CSV <b>+</b></button>
+  </section>
+  <section class="workbench">
+    <aside class="sidebar">
+      <div class="side-title">PAYMENT EVIDENCE <span id="paymentCountSide">00</span></div>
+      <div id="paymentList" class="payment-list" aria-label="Payment rows"></div>
+      <div class="batch-section"><div class="side-title">BATCH RECEIPTS</div><div id="batches"></div></div>
+    </aside>
+    <section class="detail">
+      <div class="detail-head"><div><div class="eyebrow">EXCEPTION WORKBENCH</div><h2 id="detailTitle">Select a payment row</h2></div><span id="detailStatus" class="status-pill">READY</span></div>
+      <div class="compare">
+        <article class="evidence-card"><div class="card-label"><span class="ledger-icon">↳</span> ORIGINAL EVIDENCE</div><div id="originalEvidence" class="evidence-body"><p class="muted">Choose a payment to inspect its source row.</p></div></article>
+        <div class="join-mark" aria-hidden="true">→</div>
+        <article class="proposal-card"><div class="card-label"><span class="ledger-icon green">⌁</span> PROPOSED ALLOCATION</div>
+          <label for="invoiceChoice">Invoice row</label><select id="invoiceChoice"></select>
+          <div class="split-fields"><div><label for="amountInput">Amount</label><input id="amountInput" inputmode="decimal" placeholder="0.00"></div><div><label for="reasonInput">Resolution reason</label><input id="reasonInput" maxlength="500" placeholder="Why do these rows match?"></div></div>
+          <button id="allocate" class="primary wide">Record allocation <span>↗</span></button><div id="allocationFeedback" role="status" aria-live="polite"></div>
+        </article>
+      </div>
+      <div class="section-heading"><div><div class="eyebrow">AUDIT TRAIL</div><h3>Recorded allocations</h3></div><span id="allocationCount" class="soft-count">0</span></div>
+      <div id="allocationList" class="allocation-list"></div>
+      <div id="conflicts" class="conflicts"></div>
+    </section>
+  </section>
+  <footer><span>Fabricated invoice and payment data</span><span>Nothing is paid or sent from this screen</span></footer>
+</main>
+<dialog id="importDialog">
+  <form id="importForm">
+    <div class="dialog-head"><div><div class="eyebrow">ADD SOURCE EVIDENCE</div><h2>Import CSV</h2></div><button type="button" class="close" data-close aria-label="Close import">×</button></div>
+    <label for="recordType">Record type</label><select id="recordType"><option value="payment">Payments</option><option value="invoice">Invoices</option></select>
+    <label for="sourceName">Source name</label><input id="sourceName" value="bank-export" maxlength="120">
+    <label for="csvFile">CSV file</label><input id="csvFile" type="file" accept=".csv,text/csv" required>
+    <button type="button" id="preview" class="outline wide">Preview and map columns</button><div id="mapping" class="mapping"></div><div id="previewResult" aria-live="polite"></div>
+    <button type="submit" id="importSubmit" class="primary wide" disabled>Import evidence</button>
+  </form>
+</dialog>
+<dialog id="settingsDialog">
+  <form method="dialog">
+    <div class="dialog-head"><div><div class="eyebrow">PREFERENCES</div><h2>Settings</h2></div><button type="button" class="close" data-close aria-label="Close settings">×</button></div>
+    <p class="muted">This demo stores batches and decisions in a private local runtime folder. Its sample source rows are fabricated.</p>
+    <label class="toggle"><input id="compactToggle" type="checkbox"><span>Compact evidence rows</span></label>
+    <label class="toggle"><input id="motionToggle" type="checkbox"><span>Reduce interface motion</span></label>
+    <button class="primary wide">Done</button>
+  </form>
+</dialog>
+<script src="/app.js" defer></script>
+</body>
+</html>
