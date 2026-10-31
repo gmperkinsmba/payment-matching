@@ -86,7 +86,7 @@ const importDialog=$("importDialog"),settingsDialog=$("settingsDialog");
 $("importOpen").onclick=()=>{importDialog.showModal();$("previewResult").textContent="";$("mapping").replaceChildren();$("importSubmit").disabled=true};
 $("settingsOpen").onclick=()=>settingsDialog.showModal();
 document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>b.closest("dialog").close());
-$("export").onclick=async()=>{try{const blob=await api("/api/export.csv"),url=URL.createObjectURL(blob),a=node("a");a.href=url;a.download="workflow-ledger-export.csv";a.click();URL.revokeObjectURL(url)}catch(e){alert(e.message)}};
+$("export").onclick=async()=>{try{const blob=await api("/api/export.csv"),url=URL.createObjectURL(blob),a=node("a");a.href=url;a.download="payment-matching-export.csv";a.click();URL.revokeObjectURL(url)}catch(e){alert(e.message)}};
 $("csvFile").onchange=async e=>{const file=e.target.files[0];importPreview=null;$("importSubmit").disabled=true;$("mapping").replaceChildren();$("previewResult").textContent="";
   if(!file)return;if(file.size>1_000_000){$("previewResult").textContent="Choose a CSV under 1 MB.";return}
   importText=await file.text();if(!$("sourceName").value||$("sourceName").value==="bank-export")$("sourceName").value=file.name.replace(/\.csv$/i,"").slice(0,120);

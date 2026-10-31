@@ -1,4 +1,4 @@
-"""Loopback server for the Workflow Ledger browser and native app."""
+"""Loopback server for the Payment Matching browser and native app."""
 from __future__ import annotations
 
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -129,7 +129,7 @@ def make_server(port: int = 0) -> ThreadingHTTPServer:
                 return self._json({"preferences": _read_preferences(), "saved": PREFERENCES.is_file()})
             if route == "/api/export.csv":
                 data = export_csv().encode("utf-8")
-                return self._send(200, data, "text/csv; charset=utf-8", (("Content-Disposition", 'attachment; filename="workflow-ledger-export.csv"'),))
+                return self._send(200, data, "text/csv; charset=utf-8", (("Content-Disposition", 'attachment; filename="payment-matching-export.csv"'),))
             match = re.fullmatch(r"/fixtures/(invoices|payments|payments-revised)\.csv", route)
             if match:
                 return self._send(200, (ROOT / "fixtures" / f"{match.group(1)}.csv").read_bytes(), "text/csv; charset=utf-8")
@@ -174,7 +174,7 @@ def make_server(port: int = 0) -> ThreadingHTTPServer:
 def serve(port: int = PORT):
     server = make_server(port=port)
     try:
-        print(f"Workflow Ledger listening at http://{HOST}:{server.server_port}", flush=True)
+        print(f"Payment Matching listening at http://{HOST}:{server.server_port}", flush=True)
         server.serve_forever()
     except KeyboardInterrupt:
         pass

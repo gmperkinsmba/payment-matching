@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build a local macOS Workflow Ledger application bundle."""
+"""Build a local macOS Payment Matching application bundle."""
 from __future__ import annotations
 
 import plistlib
@@ -13,7 +13,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parent
-APP_NAME = "Workflow Ledger"
+APP_NAME = "Payment Matching"
 ASSET_MANIFEST = ROOT / "desktop-assets.txt"
 OWNER_MARKER = ROOT / "desktop-app-owner.txt"
 BUNDLE_ID = "io.github.gmperkinsmba.workflow-ledger"
